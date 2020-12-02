@@ -26,15 +26,22 @@ app.post("/", function (req, res) {
 
         response.on ( "data", function (data) {
             const weatherData = JSON.parse ( data );
-            const weatherTemp = weatherData.main.temp;
-            const weatherDescription = weatherData.weather[0].description;
-            var icon = weatherData.weather[0].icon;
-            var iconUrl = "http://openweathermap.org/img/wn/" + icon + "@2x.png";
+            if(weatherData.cod == 401){
+                res.write("<p>Error Code Encountered: " + weatherData.cod + "</p>")
+                res.write(weatherData.message)
+            }
+            else
+            {
+                const weatherTemp = weatherData.main.temp;
+                const weatherDescription = weatherData.weather[0].description;
+                var icon = weatherData.weather[0].icon;
+                var iconUrl = "http://openweathermap.org/img/wn/" + icon + "@2x.png";
 
-            res.write ( "<p>The weather is currently " + weatherDescription + "</p>" );
-            res.write ( "<h1>The temperature in " + weatherData.name + " is " + weatherTemp + " degrees F</h1>", 'utf8' );
-            res.write ( "<img src=" + iconUrl + " alt=\"current weather icon\"/>" );
-            res.send ();
+                res.write ( "<p>The weather is currently " + weatherDescription + "</p>" );
+                res.write ( "<h1>The temperature in " + weatherData.name + " is " + weatherTemp + " degrees F</h1>", 'utf8' );
+                res.write ( "<img src=" + iconUrl + " alt=\"current weather icon\"/>" );
+            }
+           res.send ();
         } );
     } );
 });
